@@ -1,0 +1,30 @@
+# Java / Maven / Gradle build output
+target/
+build/
+*.class
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Environment files and secrets
+.env
+.env.*
+!.env.example
+
+# Local Spring configuration — only if it contains passwords/API keys
+application-local.yml
+application-local.yaml
+application-secret.yml
+application-secret.yaml

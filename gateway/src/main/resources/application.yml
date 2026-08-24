@@ -1,5 +1,5 @@
 spring:
   application:
-    name: activity-Service
+    name: api-gateway
   config:
     import: optional:configserver:http://localhost:9000

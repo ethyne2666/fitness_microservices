@@ -18,19 +18,61 @@ public class UserService {
 
     public UserResponse register(@Valid RegisterRequest request) {
 
-        if(repository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exist");
-        }
+        if (repository.existsByEmail(request.getEmail())) {
 
+            User existingUser = repository.findByEmail(request.getEmail());
+
+            log.info(
+                    "Existing user found. email={}, currentKeycloakId={}, incomingKeycloakId={}",
+                    existingUser.getEmail(),
+                    existingUser.getKeycloakId(),
+                    request.getKeycloakId()
+            );
+
+            // Sync Keycloak ID if it was not previously stored
+            if (existingUser.getKeycloakId() == null &&
+                    request.getKeycloakId() != null) {
+
+                existingUser.setKeycloakId(request.getKeycloakId());
+                existingUser = repository.save(existingUser);
+
+                log.info(
+                        "Updated Keycloak ID for existing user: email={}, keycloakId={}",
+                        existingUser.getEmail(),
+                        existingUser.getKeycloakId()
+                );
+            }
+
+            UserResponse userResponse = new UserResponse();
+            userResponse.setId(existingUser.getId());
+            userResponse.setKeycloakId(existingUser.getKeycloakId());
+            userResponse.setPassword(existingUser.getPassword());
+            userResponse.setEmail(existingUser.getEmail());
+            userResponse.setFirstName(existingUser.getFirstName());
+            userResponse.setLastName(existingUser.getLastName());
+            userResponse.setCreatedAt(existingUser.getCreatedAt());
+            userResponse.setUpdatedAt(existingUser.getUpdatedAt());
+
+            return userResponse;
+        }
 
         User user = new User();
         user.setEmail(request.getEmail());
+        user.setKeycloakId(request.getKeycloakId());
         user.setPassword(request.getPassword());
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
 
         User savedUser = repository.save(user);
+
+        log.info(
+                "New user saved: email={}, keycloakId={}",
+                savedUser.getEmail(),
+                savedUser.getKeycloakId()
+        );
+
         UserResponse userResponse = new UserResponse();
+        userResponse.setKeycloakId(savedUser.getKeycloakId());
         userResponse.setId(savedUser.getId());
         userResponse.setPassword(savedUser.getPassword());
         userResponse.setEmail(savedUser.getEmail());
@@ -59,6 +101,6 @@ public class UserService {
 
     public Boolean existByUserId(String userId) {
         log.info("Calling User Validation API for userId: {}" , userId);
-        return repository.existsById(userId);
+        return repository.existsByKeycloakId(userId);
     }
 }

@@ -32,5 +32,3 @@ gemini:
   api:
     url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent
     key:
-
-#    AQ.Ab8RN6LMFSBXz4mTpdR_aAct-naRN_hLFVc_kyAWx7uzbgv73A

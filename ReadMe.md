@@ -1684,6 +1684,13 @@ Repository:
 
 https://github.com/ethyne2666/fitness_microservices
 
+
+#Get the project with the docker image
+
+```
+docker push ethyne2666/fitness-microservices:tagname
+```
+
 ---
 
 # ⭐ Support
